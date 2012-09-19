@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		164CDDF6160972DA00ADD3AB /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 164CDDF5160972DA00ADD3AB /* User.m */; };
+		164CDDFF160973E400ADD3AB /* Question.m in Sources */ = {isa = PBXBuildFile; fileRef = 164CDDFE160973E400ADD3AB /* Question.m */; };
+		164CDE02160973FA00ADD3AB /* Answer.m in Sources */ = {isa = PBXBuildFile; fileRef = 164CDE01160973FA00ADD3AB /* Answer.m */; };
+		164CDE0B160997C100ADD3AB /* UserAnswer.m in Sources */ = {isa = PBXBuildFile; fileRef = 164CDE0A160997C100ADD3AB /* UserAnswer.m */; };
 		168FCEB3160664DB00D3C56A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 168FCEB2160664DB00D3C56A /* UIKit.framework */; };
 		168FCEB5160664DB00D3C56A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 168FCEB4160664DB00D3C56A /* Foundation.framework */; };
 		168FCEB7160664DB00D3C56A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 168FCEB6160664DB00D3C56A /* CoreGraphics.framework */; };
@@ -40,8 +44,6 @@
 		16BB345E16068ED100A9B483 /* QuestionsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 16BB345C16068ED000A9B483 /* QuestionsViewController.xib */; };
 		16BB3462160691DE00A9B483 /* QuestionWithAnswersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16BB3460160691DE00A9B483 /* QuestionWithAnswersViewController.m */; };
 		16BB3463160691DE00A9B483 /* QuestionWithAnswersViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 16BB3461160691DE00A9B483 /* QuestionWithAnswersViewController.xib */; };
-		16BB34661606AFA100A9B483 /* Question.m in Sources */ = {isa = PBXBuildFile; fileRef = 16BB34651606AFA100A9B483 /* Question.m */; };
-		16BB34691606B03200A9B483 /* Answer.m in Sources */ = {isa = PBXBuildFile; fileRef = 16BB34681606B03200A9B483 /* Answer.m */; };
 		16BB34701607B16700A9B483 /* ProfilerStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 16BB346F1607B16600A9B483 /* ProfilerStore.m */; };
 		16BB34781607E9F600A9B483 /* CreateAQuestionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16BB34761607E9F500A9B483 /* CreateAQuestionViewController.m */; };
 		16BB34791607E9F600A9B483 /* CreateAQuestionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 16BB34771607E9F500A9B483 /* CreateAQuestionViewController.xib */; };
@@ -55,6 +57,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		164CDDF4160972DA00ADD3AB /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
+		164CDDF5160972DA00ADD3AB /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
+		164CDDFD160973E400ADD3AB /* Question.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Question.h; sourceTree = "<group>"; };
+		164CDDFE160973E400ADD3AB /* Question.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Question.m; sourceTree = "<group>"; };
+		164CDE00160973FA00ADD3AB /* Answer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Answer.h; sourceTree = "<group>"; };
+		164CDE01160973FA00ADD3AB /* Answer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Answer.m; sourceTree = "<group>"; };
+		164CDE09160997C100ADD3AB /* UserAnswer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserAnswer.h; sourceTree = "<group>"; };
+		164CDE0A160997C100ADD3AB /* UserAnswer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserAnswer.m; sourceTree = "<group>"; };
 		168FCEAE160664DB00D3C56A /* LocationProfiler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LocationProfiler.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		168FCEB2160664DB00D3C56A /* UIKit.framework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		168FCEB4160664DB00D3C56A /* Foundation.framework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -95,10 +105,6 @@
 		16BB345F160691DE00A9B483 /* QuestionWithAnswersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuestionWithAnswersViewController.h; sourceTree = "<group>"; };
 		16BB3460160691DE00A9B483 /* QuestionWithAnswersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuestionWithAnswersViewController.m; sourceTree = "<group>"; };
 		16BB3461160691DE00A9B483 /* QuestionWithAnswersViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuestionWithAnswersViewController.xib; sourceTree = "<group>"; };
-		16BB34641606AFA000A9B483 /* Question.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Question.h; sourceTree = "<group>"; };
-		16BB34651606AFA100A9B483 /* Question.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Question.m; sourceTree = "<group>"; };
-		16BB34671606B03200A9B483 /* Answer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Answer.h; sourceTree = "<group>"; };
-		16BB34681606B03200A9B483 /* Answer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Answer.m; sourceTree = "<group>"; };
 		16BB346E1607B16600A9B483 /* ProfilerStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfilerStore.h; sourceTree = "<group>"; };
 		16BB346F1607B16600A9B483 /* ProfilerStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfilerStore.m; sourceTree = "<group>"; };
 		16BB34751607E9F400A9B483 /* CreateAQuestionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateAQuestionViewController.h; sourceTree = "<group>"; };
@@ -130,6 +136,49 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		164CDDF71609730100ADD3AB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				164CDE00160973FA00ADD3AB /* Answer.h */,
+				164CDE01160973FA00ADD3AB /* Answer.m */,
+				164CDDFD160973E400ADD3AB /* Question.h */,
+				164CDDFE160973E400ADD3AB /* Question.m */,
+				164CDDF4160972DA00ADD3AB /* User.h */,
+				164CDDF5160972DA00ADD3AB /* User.m */,
+				164CDE09160997C100ADD3AB /* UserAnswer.h */,
+				164CDE0A160997C100ADD3AB /* UserAnswer.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		164CDDF81609731C00ADD3AB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				16BB3461160691DE00A9B483 /* QuestionWithAnswersViewController.xib */,
+				168FCEE21606679D00D3C56A /* SplashViewController.xib */,
+				16BB345C16068ED000A9B483 /* QuestionsViewController.xib */,
+				16BB34771607E9F500A9B483 /* CreateAQuestionViewController.xib */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		164CDDF91609734600ADD3AB /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				168FCEE01606679D00D3C56A /* SplashViewController.h */,
+				168FCEE11606679D00D3C56A /* SplashViewController.m */,
+				16BB345A16068ED000A9B483 /* QuestionsViewController.h */,
+				16BB345B16068ED000A9B483 /* QuestionsViewController.m */,
+				16BB345F160691DE00A9B483 /* QuestionWithAnswersViewController.h */,
+				16BB3460160691DE00A9B483 /* QuestionWithAnswersViewController.m */,
+				16BB34751607E9F400A9B483 /* CreateAQuestionViewController.h */,
+				16BB34761607E9F500A9B483 /* CreateAQuestionViewController.m */,
+				16BB346E1607B16600A9B483 /* ProfilerStore.h */,
+				16BB346F1607B16600A9B483 /* ProfilerStore.m */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
 		168FCEA3160664DB00D3C56A = {
 			isa = PBXGroup;
 			children = (
@@ -163,26 +212,11 @@
 		168FCEBA160664DB00D3C56A /* LocationProfiler */ = {
 			isa = PBXGroup;
 			children = (
-				16BB34671606B03200A9B483 /* Answer.h */,
-				16BB34681606B03200A9B483 /* Answer.m */,
-				16BB34641606AFA000A9B483 /* Question.h */,
-				16BB34651606AFA100A9B483 /* Question.m */,
 				168FCEC3160664DB00D3C56A /* AppDelegate.h */,
 				168FCEC4160664DB00D3C56A /* AppDelegate.m */,
-				16BB345F160691DE00A9B483 /* QuestionWithAnswersViewController.h */,
-				16BB3460160691DE00A9B483 /* QuestionWithAnswersViewController.m */,
-				16BB3461160691DE00A9B483 /* QuestionWithAnswersViewController.xib */,
-				168FCEE01606679D00D3C56A /* SplashViewController.h */,
-				168FCEE11606679D00D3C56A /* SplashViewController.m */,
-				168FCEE21606679D00D3C56A /* SplashViewController.xib */,
-				16BB346E1607B16600A9B483 /* ProfilerStore.h */,
-				16BB346F1607B16600A9B483 /* ProfilerStore.m */,
-				16BB345A16068ED000A9B483 /* QuestionsViewController.h */,
-				16BB345B16068ED000A9B483 /* QuestionsViewController.m */,
-				16BB345C16068ED000A9B483 /* QuestionsViewController.xib */,
-				16BB34751607E9F400A9B483 /* CreateAQuestionViewController.h */,
-				16BB34761607E9F500A9B483 /* CreateAQuestionViewController.m */,
-				16BB34771607E9F500A9B483 /* CreateAQuestionViewController.xib */,
+				164CDDF71609730100ADD3AB /* Models */,
+				164CDDF81609731C00ADD3AB /* Views */,
+				164CDDF91609734600ADD3AB /* Controllers */,
 				168FCEC6160664DB00D3C56A /* LocationProfiler.xcdatamodeld */,
 				168FCEE5160667FF00D3C56A /* assets */,
 				168FCEBB160664DB00D3C56A /* Supporting Files */,
@@ -348,10 +382,12 @@
 				168FCEE31606679D00D3C56A /* SplashViewController.m in Sources */,
 				16BB345D16068ED100A9B483 /* QuestionsViewController.m in Sources */,
 				16BB3462160691DE00A9B483 /* QuestionWithAnswersViewController.m in Sources */,
-				16BB34661606AFA100A9B483 /* Question.m in Sources */,
-				16BB34691606B03200A9B483 /* Answer.m in Sources */,
 				16BB34701607B16700A9B483 /* ProfilerStore.m in Sources */,
 				16BB34781607E9F600A9B483 /* CreateAQuestionViewController.m in Sources */,
+				164CDDF6160972DA00ADD3AB /* User.m in Sources */,
+				164CDDFF160973E400ADD3AB /* Question.m in Sources */,
+				164CDE02160973FA00ADD3AB /* Answer.m in Sources */,
+				164CDE0B160997C100ADD3AB /* UserAnswer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

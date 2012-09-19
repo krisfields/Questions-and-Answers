@@ -16,16 +16,17 @@
         <attribute name="user_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="userAnswers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UserAnswer" inverseName="user" inverseEntity="UserAnswer" syncable="YES"/>
     </entity>
-    <entity name="UserAnswer" syncable="YES">
+    <entity name="UserAnswer" representedClassName="UserAnswer" syncable="YES">
         <attribute name="answer_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="user_answer_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="user_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="answer" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Answer" inverseName="userAnswers" inverseEntity="Answer" syncable="YES"/>
         <relationship name="user" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="userAnswers" inverseEntity="User" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Answer" positionX="0" positionY="0" width="128" height="120"/>
-        <element name="Question" positionX="0" positionY="0" width="128" height="90"/>
-        <element name="User" positionX="160" positionY="192" width="128" height="75"/>
-        <element name="UserAnswer" positionX="160" positionY="192" width="128" height="105"/>
+        <element name="Answer" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Question" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="User" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="UserAnswer" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

@@ -7,10 +7,12 @@
 //
 
 #import "QuestionWithAnswersViewController.h"
-#import <RestKit/RestKit.h>
+#import <RestKit/CoreData.h>
 #import "ProfilerStore.h"
 #import "Answer.h"
 #import "Question.h"
+#import "UserAnswer.h"
+#import "User.h"
 
 @interface QuestionWithAnswersViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -36,7 +38,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.answers = [self.question.answers allObjects];
+    self.answers = [[[self.questions objectAtIndex:self.current_question_index] answers] allObjects];
     UIImageView *questionWithAnswersImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bg-black.png"]];
     [questionWithAnswersImageView setFrame:self.answersTable.frame];
     self.answersTable.backgroundView = questionWithAnswersImageView;
@@ -112,7 +114,7 @@
     
     
     if ([indexPath section] == 0) {
-        cell.textLabel.text = self.question.text;
+        cell.textLabel.text = [[self.questions objectAtIndex:self.current_question_index] text];
         cell.textLabel.textAlignment = UITextAlignmentCenter;
         cell.textLabel.font = [UIFont fontWithName:@"didot" size:18];
     } else {
@@ -127,8 +129,29 @@
     }
     return cell;
 }
-- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    //create userAnswer with correct user_id and answer_id
+    if ([indexPath section] == 1) {
+        [self.answersTable cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryCheckmark;
+        UserAnswer *userAnswer = [UserAnswer object];
+        userAnswer.answer_id = [[self.answers objectAtIndex:[indexPath row]] answer_id];
+        userAnswer.user_id = [[ProfilerStore currentUser] user_id];
+        [ProfilerStore saveUserAnswer:userAnswer];
+        self.current_question_index ++;
+        if (self.current_question_index < [self.questions count]) {
+            self.answers = [[[self.questions objectAtIndex:self.current_question_index] answers] allObjects];
+            [self.answersTable reloadData];
+        } else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"You've answered the last question!" message:@"Maybe you should add some more..." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            [alert show];
+        }
+        
+    }
+
+    //post to backend
+    //change self.question and reload table
+    
     //    PTCategoryViewController *categoryVC = [PTCategoryViewController new];
     //    categoryVC.categoryDetails = [self.categories objectAtIndex:[indexPath row]];
     //    [self.navigationController pushViewController:categoryVC animated:YES];
@@ -138,8 +161,6 @@
 {
     [self setAnswersTable:nil];
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

@@ -11,7 +11,9 @@
 #import "QuestionWithAnswersViewController.h"
 #import "ProfilerStore.h"
 #import "Question.h"
-
+#import "Answer.h"
+#import "UserAnswer.h"
+#import "User.h"
 
 @interface QuestionsViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -43,15 +45,19 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.questions = [Question allObjects
-                      ];
+
     UIImageView *questionsImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bg-black.png"]];
     [questionsImageView setFrame:self.questionsTable.frame];
     
     self.questionsTable.backgroundView = questionsImageView;
     
 }
-
+- (void)viewWillAppear:(BOOL)animated
+{
+    self.questions = [Question allObjects
+                      ];
+    [self.questionsTable reloadData];
+}
 - (void)viewDidUnload
 {
     [self setQuestionsTable:nil];
@@ -83,21 +89,32 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [self.questions count];
+    return 1;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 1;
+    return [self.questions count];
     
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 40.0;
+    return 45.0;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    Question *question = [self.questions objectAtIndex:[indexPath section]];
+    Question *question = [self.questions objectAtIndex:[indexPath row]];
     UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"question"];
+    BOOL is_answered = NO;
+    for (Answer *answer in question.answers) {
+        for (UserAnswer *userAnswer in answer.userAnswers) {
+            if (userAnswer.user == [ProfilerStore currentUser]) {
+                is_answered = YES;
+            }
+        }
+    }
+    if (is_answered) {
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    }
     cell.textLabel.text = question.text;
     cell.textLabel.textColor = [UIColor blackColor];
     cell.textLabel.numberOfLines = 0;
@@ -115,8 +132,9 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     QuestionWithAnswersViewController *questionWithAnswersVC = [QuestionWithAnswersViewController new];
-    questionWithAnswersVC.question = [self.questions objectAtIndex:[indexPath section]];
-    [ProfilerStore fetchAnswersForQuestion:[self.questions objectAtIndex:[indexPath section]] withBlock:^{
+    questionWithAnswersVC.questions = self.questions;
+    questionWithAnswersVC.current_question_index = [indexPath row];
+    [ProfilerStore fetchAnswersForQuestion:[self.questions objectAtIndex:[indexPath row]] withBlock:^{
         [self.navigationController pushViewController:questionWithAnswersVC animated:YES];
     }];
     

@@ -9,14 +9,18 @@
 #import <Foundation/Foundation.h>
 @class Question;
 @class Answer;
+@class UserAnswer;
+@class User;
 
 
 @interface ProfilerStore : NSObject
-+(void)setupProfilerStore:(NSString *)userName password:(NSString *)password;
-
++(User *)currentUser;
++(void)setupProfilerStore;
++(void)setProfilerStoreUserName:(NSString *)userName password:(NSString *)password;
 +(void)fetchCurrentUser:(void (^)(void))completionBlock withLoginBlock:(void (^)(void))loginBlock;
-+(void)fetchQuestions:(void(^)(void))completionBlock withLoginBlock:(void(^)(void))loginBlock;
++(void)fetchQuestions:(void(^)(void))completionBlock;
 +(void)fetchAnswersForQuestion:(Question *)question withBlock:(void(^)(void))completionBlock;
 +(void)saveQuestion:(Question *)question withBlock:(void(^)(int))completitionBlock;
 +(void)saveAnswer:(Answer *)answer;
++(void)saveUserAnswer:(UserAnswer *)userAnswer;
 @end

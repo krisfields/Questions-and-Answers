@@ -1,22 +1,22 @@
 //
-//  Answer.m
+//  UserAnswer.m
 //  LocationProfiler
 //
 //  Created by Kris Fields on 9/18/12.
 //  Copyright (c) 2012 Kris Fields. All rights reserved.
 //
 
-#import "Answer.h"
-#import "Question.h"
 #import "UserAnswer.h"
+#import "Answer.h"
+#import "User.h"
 
 
-@implementation Answer
+@implementation UserAnswer
 
+@dynamic user_id;
 @dynamic answer_id;
-@dynamic question_id;
-@dynamic text;
-@dynamic question;
-@dynamic userAnswers;
+@dynamic user_answer_id;
+@dynamic user;
+@dynamic answer;
 
 @end

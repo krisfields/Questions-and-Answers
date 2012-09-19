@@ -10,6 +10,7 @@
 #import "SplashViewController.h"
 #import "QuestionsViewController.h"
 #import "CreateAQuestionViewController.h"
+#import "ProfilerStore.h"
 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
@@ -33,7 +34,7 @@
     [[[splashVC tabBarController] tabBar] setSelectionIndicatorImage:[UIImage imageNamed:@"bg-purple-footer-cover.jpg"]];
     splashVC.tabBarController.viewControllers = @[questionsNavController, createAQuestionNavController];
     self.window.rootViewController = splashVC;
-    
+    [ProfilerStore setupProfilerStore];
     
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];

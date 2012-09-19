@@ -1,9 +1,9 @@
 //
 //  Question.m
-//  
+//  LocationProfiler
 //
-//  Created by Kris Fields on 9/16/12.
-//
+//  Created by Kris Fields on 9/18/12.
+//  Copyright (c) 2012 Kris Fields. All rights reserved.
 //
 
 #import "Question.h"
@@ -12,8 +12,8 @@
 
 @implementation Question
 
-@dynamic text;
 @dynamic question_id;
+@dynamic text;
 @dynamic answers;
 
 @end

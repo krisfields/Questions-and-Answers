@@ -11,5 +11,6 @@
 
 @interface QuestionWithAnswersViewController : UIViewController
 
-@property (strong, nonatomic) Question *question;
+@property (strong, nonatomic) NSArray *questions;
+@property (nonatomic) int current_question_index;
 @end

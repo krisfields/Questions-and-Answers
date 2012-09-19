@@ -8,6 +8,7 @@
 
 #import "SplashViewController.h"
 #import "ProfilerStore.h"
+#import "User.h"
 
 
 
@@ -18,6 +19,7 @@
 - (IBAction)signInButton:(id)sender;
 @property (weak, nonatomic) IBOutlet UILabel *labelBehindEmail;
 @property (weak, nonatomic) IBOutlet UILabel *labelBehindPassword;
+@property (strong, nonatomic) User *currentUser;
 
 @end
 
@@ -71,9 +73,11 @@
 - (void)loginUser {
     NSString *email = self.emailField.text;
     NSString *password = self.passwordField.text;
-    [ProfilerStore setupProfilerStore:email password:password];
-    [ProfilerStore fetchQuestions: ^{
-        [self presentModalViewController:self.tabBarController animated:YES];
+    [ProfilerStore setProfilerStoreUserName:email password:password];
+    [ProfilerStore fetchCurrentUser: ^{
+        [ProfilerStore fetchQuestions: ^{
+            [self presentModalViewController:self.tabBarController animated:YES];
+        }];
     } withLoginBlock:^{
         UIAlertView *loginFailed = [[UIAlertView alloc] initWithTitle:@"Oops! You've entered an invalid email and/or password" message:@"" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [loginFailed show];

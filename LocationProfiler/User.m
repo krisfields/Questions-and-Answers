@@ -12,5 +12,6 @@
 @implementation User
 
 @dynamic user_id;
+@dynamic userAnswers;
 
 @end

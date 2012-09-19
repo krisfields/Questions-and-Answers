@@ -10,14 +10,19 @@
 #import <RestKit/RestKit.h>
 #import "Question.h"
 #import "Answer.h"
+#import "User.h"
+#import "UserAnswer.h"
 
 static RKObjectManager *profilerObjectManager;
+static User *currentUser;
 
 @implementation ProfilerStore
-+(void)setupProfilerStore:(NSString *)userName password:(NSString *)password {
++(User *)currentUser {
+    return currentUser;
+}
++(void)setupProfilerStore {
     RKClient *profilerClient = [RKClient clientWithBaseURLString:@"http://localhost:3000"];
-    profilerClient.username = userName;
-    profilerClient.password = password;
+
     
     profilerObjectManager = [RKObjectManager new];
     profilerObjectManager.client = profilerClient;
@@ -26,8 +31,28 @@ static RKObjectManager *profilerObjectManager;
 
     [self setUpQuestionMapping];
     [self setUpAnswerMapping];
+    [self setUpUserMapping];
+    [self setUpUserAnswerMapping];
 }
-
++(void)setProfilerStoreUserName:(NSString *)userName password:(NSString *)password {
+    profilerObjectManager.client.username = userName;
+    profilerObjectManager.client.password = password;
+}
++(void)setUpUserMapping {
+    RKManagedObjectMapping *userMapping = [RKManagedObjectMapping mappingForClass:[User class] inManagedObjectStore:profilerObjectManager.objectStore];
+    
+    userMapping.objectClass = [User class];
+    [userMapping mapKeyPath:@"id" toAttribute:@"user_id"];
+    userMapping.primaryKeyAttribute = @"user_id";
+    
+    [profilerObjectManager.mappingProvider addObjectMapping:userMapping];
+    
+    RKObjectMapping *serializationMapping = userMapping.inverseMapping;
+    serializationMapping.rootKeyPath = @"user";
+    [profilerObjectManager.mappingProvider setSerializationMapping:serializationMapping forClass:[User class]];
+    
+    [profilerObjectManager.router routeClass:[User class] toResourcePath:@"/users.json"];
+}
 +(void)setUpQuestionMapping {
     RKManagedObjectMapping *questionMapping = [RKManagedObjectMapping mappingForClass:[Question class] inManagedObjectStore:profilerObjectManager.objectStore];
     
@@ -64,22 +89,44 @@ static RKObjectManager *profilerObjectManager;
     
     [profilerObjectManager.router routeClass:[Answer class] toResourcePath:@"/answers.json"];
 }
-+(void)fetchCurrentUser:(void (^)(void))completionBlock withLoginBlock:(void (^)(void))loginBlock {
-//    [profilerObjectManager loadObjectsAtResourcePath:@"/users.json" usingBlock:^(RKObjectLoader *loader) {
-//        loader.objectMapping = [profilerObjectManager.mappingProvider objectMappingForClass:[User class]];
-//        loader.onDidLoadObjects = ^(NSArray* objects) {
-//            if (completionBlock)
-//                completionBlock();
-//            NSLog(@"INSIDE FETCH QUESTIONS ONDIDLOADOBJECTS");
-//        };
-//        loader.onDidFailLoadWithError = ^(NSError* err) {
-//            NSLog(@"%@", err);
-//            if (loginBlock)
-//                loginBlock();
-//        };
-//    }];
++(void)setUpUserAnswerMapping {
+    RKManagedObjectMapping *userAnswerMapping = [RKManagedObjectMapping mappingForClass:[UserAnswer class] inManagedObjectStore:profilerObjectManager.objectStore];
+    
+    userAnswerMapping.objectClass = [UserAnswer class];
+    [userAnswerMapping mapKeyPath:@"id" toAttribute:@"user_answer_id"];
+    [userAnswerMapping mapAttributes:@"user_id", @"answer_id", nil];
+    userAnswerMapping.primaryKeyAttribute = @"user_answer_id";
+    RKObjectMapping *serializationMapping = userAnswerMapping.inverseMapping;
+    serializationMapping.rootKeyPath = @"user_answer"; //user_answer or userAnswer?
+    
+    [userAnswerMapping mapRelationship:@"user" withMapping:[profilerObjectManager.mappingProvider objectMappingForClass:[User class]]];
+    
+    [userAnswerMapping connectRelationship:@"user" withObjectForPrimaryKeyAttribute:@"user_id"];
+    [userAnswerMapping mapRelationship:@"answer" withMapping:[profilerObjectManager.mappingProvider objectMappingForClass:[Answer class]]];
+    
+    [userAnswerMapping connectRelationship:@"answer" withObjectForPrimaryKeyAttribute:@"answer_id"];
+    [profilerObjectManager.mappingProvider addObjectMapping:userAnswerMapping];
+    
+    [profilerObjectManager.mappingProvider setSerializationMapping:serializationMapping forClass:[UserAnswer class]];
+    
+    [profilerObjectManager.router routeClass:[UserAnswer class] toResourcePath:@"/user_answers.json"];
 }
-+(void)fetchQuestions:(void (^)(void))completionBlock withLoginBlock:(void (^)(void))loginBlock {
++(void)fetchCurrentUser:(void (^)(void))completionBlock withLoginBlock:(void (^)(void))loginBlock {
+    [profilerObjectManager loadObjectsAtResourcePath:@"/users.json?current_user=true" usingBlock:^(RKObjectLoader *loader) {
+        loader.objectMapping = [profilerObjectManager.mappingProvider objectMappingForClass:[User class]];
+        loader.onDidLoadObject = ^(User *userObject) {
+            currentUser = userObject;
+            if (completionBlock)
+                completionBlock();
+        };
+        loader.onDidFailLoadWithError = ^(NSError* err) {
+            NSLog(@"%@", err);
+            if (loginBlock)
+                loginBlock();
+        };
+    }];
+}
++(void)fetchQuestions:(void (^)(void))completionBlock {
     [profilerObjectManager loadObjectsAtResourcePath:@"/questions.json" usingBlock:^(RKObjectLoader *loader) {
         loader.objectMapping = [profilerObjectManager.mappingProvider objectMappingForClass:[Question class]];
         
@@ -90,8 +137,6 @@ static RKObjectManager *profilerObjectManager;
         };
         loader.onDidFailLoadWithError = ^(NSError* err) {
             NSLog(@"%@", err);
-            if (loginBlock)
-                loginBlock();
         };
     }];
 }
@@ -128,6 +173,14 @@ static RKObjectManager *profilerObjectManager;
         loader.objectMapping = [profilerObjectManager.mappingProvider objectMappingForClass:[Answer class]];
         loader.onDidLoadResponse = ^(RKResponse *response){
             NSLog(@"RESPONSE:  %@",response.bodyAsString);
+        };
+    }];
+}
++(void)saveUserAnswer:(UserAnswer *)userAnswer {
+    [profilerObjectManager postObject:userAnswer usingBlock:^(RKObjectLoader *loader) {
+        loader.objectMapping = [profilerObjectManager.mappingProvider objectMappingForClass:[UserAnswer class]];
+        loader.onDidLoadResponse = ^(RKResponse *response){
+            NSLog(@"RESPONSE to USERANSWER SAVE:  %@",response.bodyAsString);
         };
     }];
 }
