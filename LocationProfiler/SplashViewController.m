@@ -74,6 +74,9 @@
     [ProfilerStore setupProfilerStore:email password:password];
     [ProfilerStore fetchQuestions: ^{
         [self presentModalViewController:self.tabBarController animated:YES];
+    } withLoginBlock:^{
+        UIAlertView *loginFailed = [[UIAlertView alloc] initWithTitle:@"Oops! You've entered an invalid email and/or password" message:@"" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [loginFailed show];
     }];
 }
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {

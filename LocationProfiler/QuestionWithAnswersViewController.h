@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+@class Question;
 
 @interface QuestionWithAnswersViewController : UIViewController
 
-@property (strong, nonatomic) NSDictionary *question_data;
+@property (strong, nonatomic) Question *question;
 @end

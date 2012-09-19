@@ -14,7 +14,7 @@
 @interface Question : NSManagedObject
 
 @property (nonatomic, retain) NSString * text;
-@property (nonatomic) int32_t id;
+@property (nonatomic) int32_t question_id;
 @property (nonatomic, retain) NSSet *answers;
 @end
 

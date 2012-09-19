@@ -9,9 +9,11 @@
 #import "QuestionsViewController.h"
 #import <RestKit/RestKit.h>
 #import "QuestionWithAnswersViewController.h"
+#import "ProfilerStore.h"
+#import "Question.h"
 
 
-@interface QuestionsViewController () <UITableViewDelegate, UITableViewDataSource, RKRequestDelegate>
+@interface QuestionsViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (strong, nonatomic) NSArray *questions;
 @property (weak, nonatomic) IBOutlet UITableView *questionsTable;
@@ -26,8 +28,8 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.title = NSLocalizedString(@"Questions", @"Questions");
-        self.tabBarItem.image = [UIImage imageNamed:@"pencil.png"];
+        self.title = NSLocalizedString(@"Answer Questions", @"Answer Questions");
+        self.tabBarItem.image = [UIImage imageNamed:@"icon_help.png"];
         [[UITabBar appearance] setSelectedImageTintColor:[UIColor purpleColor]];
         [[UITabBar appearance] setTintColor:[UIColor whiteColor]];
         [[self tabBarItem] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
@@ -41,17 +43,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    self.questions = [Question allObjects
+                      ];
     UIImageView *questionsImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bg-black.png"]];
     [questionsImageView setFrame:self.questionsTable.frame];
     
     self.questionsTable.backgroundView = questionsImageView;
     
-    [RKClient clientWithBaseURLString:@"http://localhost:3000"];
-    RKClient* client = [RKClient sharedClient];
-    client.username = @"user@example.com";
-    client.password = @"please";
-    [client get:@"/questions.json" queryParameters:nil delegate:self];
 }
 
 - (void)viewDidUnload
@@ -72,7 +70,7 @@
     if (!titleView) {
         titleView = [[UILabel alloc] initWithFrame:CGRectZero];
         titleView.backgroundColor = [UIColor clearColor];
-        titleView.font = [UIFont fontWithName:@"didot" size:40];
+        titleView.font = [UIFont fontWithName:@"didot" size:35];
         //        titleView.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.5];
         
         titleView.textColor =UIColorFromRGB(0x9391AC); // Change to desired color
@@ -82,43 +80,45 @@
     titleView.text = title;
     [titleView sizeToFit];
 }
--(void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
-{
-    id jsonParser = [[RKParserRegistry sharedRegistry] parserForMIMEType:RKMIMETypeJSON];
-    self.questions = [jsonParser objectFromString:[response bodyAsString] error:nil];
-    [self.questionsTable reloadData];
-    
-    
-}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return [self.questions count];
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSLog(@"questions count = %d", [self.questions count]);
-    return [self.questions count];
+    return 1;
     
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 60.0;
+    return 40.0;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    Question *question = [self.questions objectAtIndex:[indexPath section]];
     UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"question"];
-    cell.textLabel.text = [[self.questions objectAtIndex:[indexPath row]] objectForKey:@"text"];
+    cell.textLabel.text = question.text;
+    cell.textLabel.textColor = [UIColor blackColor];
+    cell.textLabel.numberOfLines = 0;
+    cell.textLabel.lineBreakMode = UILineBreakModeWordWrap;
     cell.textLabel.opaque = NO;
-    cell.textLabel.alpha = 0.6;
-    cell.backgroundColor = UIColorFromRGB(0x21212B);
-    cell.textLabel.textColor = UIColorFromRGB(0x9587EB);
+    cell.textLabel.font = [UIFont fontWithName:@"system" size:28];
+//    cell.textLabel.alpha = 0.6;
+//    cell.backgroundColor = UIColorFromRGB(0x21212B);
+    cell.backgroundColor = [UIColor whiteColor];
+//    cell.backgroundColor = [UIColor colorWithRed:.2 green:.2 blue:.2 alpha:.3];
+//    cell.textLabel.textColor = UIColorFromRGB(0x9587EB);
     //    [arrayOfColors objectAtIndex:[indexPath row]];
     return cell;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     QuestionWithAnswersViewController *questionWithAnswersVC = [QuestionWithAnswersViewController new];
-    questionWithAnswersVC.question_data = [self.questions objectAtIndex:[indexPath row]];
-    [self.navigationController pushViewController:questionWithAnswersVC animated:YES];
+    questionWithAnswersVC.question = [self.questions objectAtIndex:[indexPath section]];
+    [ProfilerStore fetchAnswersForQuestion:[self.questions objectAtIndex:[indexPath section]] withBlock:^{
+        [self.navigationController pushViewController:questionWithAnswersVC animated:YES];
+    }];
+    
 }
 @end

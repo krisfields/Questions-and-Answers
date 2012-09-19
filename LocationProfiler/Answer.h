@@ -15,8 +15,9 @@
 
 @property (nonatomic, retain) NSString * text;
 @property (nonatomic) int32_t question_id;
-@property (nonatomic) int32_t id;
+@property (nonatomic) int32_t answer_id;
 @property (nonatomic, retain) Question *question;
+
 
 
 @end

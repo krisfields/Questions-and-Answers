@@ -13,7 +13,7 @@
 @implementation Question
 
 @dynamic text;
-@dynamic id;
+@dynamic question_id;
 @dynamic answers;
 
 @end

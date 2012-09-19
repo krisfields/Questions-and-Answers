@@ -13,8 +13,9 @@
 @implementation Answer
 
 @dynamic text;
-@dynamic question_id;
-@dynamic id;
+@dynamic answer_id;
 @dynamic question;
+@dynamic question_id;
+
 
 @end

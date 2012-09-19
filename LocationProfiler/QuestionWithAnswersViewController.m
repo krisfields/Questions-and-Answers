@@ -8,8 +8,11 @@
 
 #import "QuestionWithAnswersViewController.h"
 #import <RestKit/RestKit.h>
+#import "ProfilerStore.h"
+#import "Answer.h"
+#import "Question.h"
 
-@interface QuestionWithAnswersViewController () <UITableViewDelegate, UITableViewDataSource, RKRequestDelegate>
+@interface QuestionWithAnswersViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (strong, nonatomic) NSArray *answers;
 @property (weak, nonatomic) IBOutlet UITableView *answersTable;
@@ -33,14 +36,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.answers = [self.question.answers allObjects];
     UIImageView *questionWithAnswersImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bg-black.png"]];
     [questionWithAnswersImageView setFrame:self.answersTable.frame];
     self.answersTable.backgroundView = questionWithAnswersImageView;
-    
-    [RKClient clientWithBaseURLString:@"http://localhost:3000"];
-    RKClient* client = [RKClient sharedClient];
-    NSDictionary* params = @{ @"show" : @true };
-    [client get:[NSString stringWithFormat:@"/questions/%@.json", [self.question_data valueForKey:@"id"]] queryParameters:params delegate:self];
 
     // Do any additional setup after loading the view from its nib.
 }
@@ -61,58 +60,71 @@
     titleView.text = title;
     [titleView sizeToFit];
 }
--(void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
-{
-    id jsonParser = [[RKParserRegistry sharedRegistry] parserForMIMEType:RKMIMETypeJSON];
-    self.answers = [jsonParser objectFromString:[response bodyAsString] error:nil];
-    [self.answersTable reloadData];
-    
-    
-}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return 2;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSLog(@"answers count = %d", [self.answers count]);
+    if (section == 0) {
+        return 1;
+    }
     return [self.answers count];
     
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 60.0;
+    if ([indexPath section] == 0) {
+        return 60;
+    }
+    return 45.0;
 }
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-
-{
-    return [self.question_data valueForKey:@"text"];
-}
-- (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, 60)];
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, 30)];
-    label.text = [self.question_data valueForKey:@"text"];
-    label.textColor = UIColorFromRGB(0x9391AC);
-    label.textAlignment = UITextAlignmentCenter;
-    label.font =[UIFont fontWithName:@"didot" size:20];
-    label.backgroundColor = [UIColor clearColor];
-    label.adjustsFontSizeToFitWidth = YES;
-
-    label.numberOfLines = 0;
-    [label sizeToFit];
-    [headerView addSubview:label];
-    return headerView;
-}
+//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+//
+//{
+//    return self.question.text;
+//}
+//- (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+//{
+//    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, 60)];
+//    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, 30)];
+//    label.text = self.question.text;
+//    label.textColor = UIColorFromRGB(0x9391AC);
+//    label.textAlignment = UITextAlignmentCenter;
+//    label.font =[UIFont fontWithName:@"didot" size:20];
+//    label.backgroundColor = [UIColor clearColor];
+//    label.adjustsFontSizeToFitWidth = YES;
+//
+//    label.numberOfLines = 0;
+//    [label sizeToFit];
+//    [headerView addSubview:label];
+//    return headerView;
+//}
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"question"];
-    cell.textLabel.text = [[self.answers objectAtIndex:[indexPath row]] objectForKey:@"text"];
-    cell.textLabel.opaque = NO;
-    cell.textLabel.alpha = 0.6;
-    cell.backgroundColor = UIColorFromRGB(0x21212B);
-    cell.textLabel.textColor = UIColorFromRGB(0x9587EB);
-    //    [arrayOfColors objectAtIndex:[indexPath row]];
+    UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"answer"];
+    cell.textLabel.numberOfLines = 0;
+//    cell.textLabel.adjustsFontSizeToFitWidth = YES;
+    cell.textLabel.lineBreakMode = UILineBreakModeWordWrap;
+    
+    cell.backgroundColor = [UIColor whiteColor];
+    
+    
+    if ([indexPath section] == 0) {
+        cell.textLabel.text = self.question.text;
+        cell.textLabel.textAlignment = UITextAlignmentCenter;
+        cell.textLabel.font = [UIFont fontWithName:@"didot" size:18];
+    } else {
+        Answer *answer = [self.answers objectAtIndex:[indexPath row]];
+        cell.textLabel.font = [UIFont fontWithName:@"system" size:28];
+        cell.textLabel.text = answer.text;
+    //    cell.textLabel.opaque = NO;
+    //    cell.textLabel.alpha = 0.6;
+    //    cell.backgroundColor = UIColorFromRGB(0x21212B);
+//        cell.textLabel.textColor = UIColorFromRGB(0x9587EB);
+        //    [arrayOfColors objectAtIndex:[indexPath row]];
+    }
     return cell;
 }
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath

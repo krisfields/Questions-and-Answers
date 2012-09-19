@@ -10,9 +10,13 @@
 @class Question;
 @class Answer;
 
+
 @interface ProfilerStore : NSObject
 +(void)setupProfilerStore:(NSString *)userName password:(NSString *)password;
 
-+(void)fetchQuestions:(void(^)(void))completionBlock;
++(void)fetchCurrentUser:(void (^)(void))completionBlock withLoginBlock:(void (^)(void))loginBlock;
++(void)fetchQuestions:(void(^)(void))completionBlock withLoginBlock:(void(^)(void))loginBlock;
 +(void)fetchAnswersForQuestion:(Question *)question withBlock:(void(^)(void))completionBlock;
++(void)saveQuestion:(Question *)question withBlock:(void(^)(int))completitionBlock;
++(void)saveAnswer:(Answer *)answer;
 @end
