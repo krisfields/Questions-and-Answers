@@ -34,6 +34,9 @@ static User *currentUser;
     [self setUpUserMapping];
     [self setUpUserAnswerMapping];
 }
++(NSManagedObjectContext *)managedObjectContext {
+    return [profilerObjectManager.objectStore primaryManagedObjectContext];
+}
 +(void)setProfilerStoreUserName:(NSString *)userName password:(NSString *)password {
     profilerObjectManager.client.username = userName;
     profilerObjectManager.client.password = password;
@@ -108,8 +111,9 @@ static User *currentUser;
     [profilerObjectManager.mappingProvider addObjectMapping:userAnswerMapping];
     
     [profilerObjectManager.mappingProvider setSerializationMapping:serializationMapping forClass:[UserAnswer class]];
-    
     [profilerObjectManager.router routeClass:[UserAnswer class] toResourcePath:@"/user_answers.json"];
+    [profilerObjectManager.router routeClass:[UserAnswer class] toResourcePath:@"/user_answers/:user_answer_id\\.json" forMethod:RKRequestMethodPUT];
+    
 }
 +(void)fetchCurrentUser:(void (^)(void))completionBlock withLoginBlock:(void (^)(void))loginBlock {
     [profilerObjectManager loadObjectsAtResourcePath:@"/users.json?current_user=true" usingBlock:^(RKObjectLoader *loader) {
@@ -176,11 +180,22 @@ static User *currentUser;
         };
     }];
 }
-+(void)saveUserAnswer:(UserAnswer *)userAnswer {
++(void)saveUserAnswer:(UserAnswer *)userAnswer withBlock:(void(^)(void))completitionBlock {
     [profilerObjectManager postObject:userAnswer usingBlock:^(RKObjectLoader *loader) {
         loader.objectMapping = [profilerObjectManager.mappingProvider objectMappingForClass:[UserAnswer class]];
         loader.onDidLoadResponse = ^(RKResponse *response){
             NSLog(@"RESPONSE to USERANSWER SAVE:  %@",response.bodyAsString);
+        };
+        loader.onDidLoadObject = ^(NSObject *object){
+            completitionBlock();
+        };
+    }];
+}
++(void)updateUserAnswer:(UserAnswer *)userAnswer {
+    [profilerObjectManager putObject:userAnswer usingBlock:^(RKObjectLoader *loader) {
+        loader.objectMapping = [profilerObjectManager.mappingProvider objectMappingForClass:[UserAnswer class]];
+        loader.onDidLoadResponse = ^(RKResponse *response){
+            NSLog(@"RESPONSE to USERANSWER UPDATE:  %@",response.bodyAsString);
         };
     }];
 }

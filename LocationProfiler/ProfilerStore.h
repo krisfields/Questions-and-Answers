@@ -16,11 +16,13 @@
 @interface ProfilerStore : NSObject
 +(User *)currentUser;
 +(void)setupProfilerStore;
++(NSManagedObjectContext *)managedObjectContext;
 +(void)setProfilerStoreUserName:(NSString *)userName password:(NSString *)password;
 +(void)fetchCurrentUser:(void (^)(void))completionBlock withLoginBlock:(void (^)(void))loginBlock;
 +(void)fetchQuestions:(void(^)(void))completionBlock;
 +(void)fetchAnswersForQuestion:(Question *)question withBlock:(void(^)(void))completionBlock;
 +(void)saveQuestion:(Question *)question withBlock:(void(^)(int))completitionBlock;
 +(void)saveAnswer:(Answer *)answer;
-+(void)saveUserAnswer:(UserAnswer *)userAnswer;
++(void)saveUserAnswer:(UserAnswer *)userAnswer withBlock:(void(^)(void))completitionBlock;
++(void)updateUserAnswer:(UserAnswer *)userAnswer;
 @end

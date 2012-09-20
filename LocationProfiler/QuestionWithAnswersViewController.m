@@ -38,12 +38,18 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self updateUserAnswerCount];
     self.answers = [[[self.questions objectAtIndex:self.current_question_index] answers] allObjects];
     UIImageView *questionWithAnswersImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bg-black.png"]];
     [questionWithAnswersImageView setFrame:self.answersTable.frame];
     self.answersTable.backgroundView = questionWithAnswersImageView;
 
     // Do any additional setup after loading the view from its nib.
+}
+-(void)updateUserAnswerCount {
+    int userAnswerCount = [[[ProfilerStore currentUser] userAnswers] count];
+    self.title = [NSString stringWithFormat:@"Questions Answered: %d of %d", userAnswerCount, [self.questions count]];
+    [self.navigationItem.titleView setNeedsDisplay];
 }
 - (void)setTitle:(NSString *)title
 {
@@ -52,7 +58,7 @@
     if (!titleView) {
         titleView = [[UILabel alloc] initWithFrame:CGRectZero];
         titleView.backgroundColor = [UIColor clearColor];
-        titleView.font = [UIFont fontWithName:@"didot" size:40];
+        titleView.font = [UIFont fontWithName:@"didot" size:15];
         //        titleView.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.5];
         
         titleView.textColor =UIColorFromRGB(0x9391AC); // Change to desired color
@@ -118,7 +124,16 @@
         cell.textLabel.textAlignment = UITextAlignmentCenter;
         cell.textLabel.font = [UIFont fontWithName:@"didot" size:18];
     } else {
+        BOOL is_answered = NO;
         Answer *answer = [self.answers objectAtIndex:[indexPath row]];
+        for (UserAnswer *userAnswer in answer.userAnswers) {
+            if (userAnswer.user == [ProfilerStore currentUser]) {
+                is_answered = YES;
+            }
+        }
+        if (is_answered) {
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        }
         cell.textLabel.font = [UIFont fontWithName:@"system" size:28];
         cell.textLabel.text = answer.text;
     //    cell.textLabel.opaque = NO;
@@ -133,11 +148,32 @@
 {
     //create userAnswer with correct user_id and answer_id
     if ([indexPath section] == 1) {
+        for (int i=0; i < [self.answersTable numberOfRowsInSection:1]; i++) {
+            UITableViewCell *newCell = [self.answersTable cellForRowAtIndexPath:[[indexPath indexPathByRemovingLastIndex] indexPathByAddingIndex: i]];
+                newCell.accessoryType = UITableViewCellAccessoryNone;
+        }
         [self.answersTable cellForRowAtIndexPath:indexPath].accessoryType = UITableViewCellAccessoryCheckmark;
-        UserAnswer *userAnswer = [UserAnswer object];
-        userAnswer.answer_id = [[self.answers objectAtIndex:[indexPath row]] answer_id];
-        userAnswer.user_id = [[ProfilerStore currentUser] user_id];
-        [ProfilerStore saveUserAnswer:userAnswer];
+        UserAnswer *userAnswer;
+        for (Answer *answer in self.answers) {
+            for (UserAnswer *userPreviousAnswer in answer.userAnswers) {
+                if (userPreviousAnswer.user == [ProfilerStore currentUser]) {
+                    userAnswer = userPreviousAnswer;
+                    userAnswer.answer_id = [[self.answers objectAtIndex:[indexPath row]] answer_id];
+                }
+            }
+        }
+        if (!userAnswer) {
+            userAnswer = [UserAnswer object];
+            userAnswer.user_id = [[ProfilerStore currentUser] user_id];
+            userAnswer.answer_id = [[self.answers objectAtIndex:[indexPath row]] answer_id];
+            [ProfilerStore saveUserAnswer:userAnswer withBlock:^{
+                [self updateUserAnswerCount];
+            }];
+        } else {
+            [ProfilerStore updateUserAnswer:userAnswer];
+        }
+        
+        
         self.current_question_index ++;
         if (self.current_question_index < [self.questions count]) {
             self.answers = [[[self.questions objectAtIndex:self.current_question_index] answers] allObjects];
